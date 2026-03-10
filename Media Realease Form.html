@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registration Form</title>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --google-blue: #1a73e8;
+    --google-blue-dark: #1557b0;
+    --google-red: #d93025;
+    --purple-header: #673ab7;
+    --purple-light: #7e57c2;
+    --bg: #f0ebf8;
+    --card: #ffffff;
+    --border: #dadce0;
+    --text: #202124;
+    --text-secondary: #5f6368;
+    --error: #d93025;
+    --focus-line: #673ab7;
+    --input-hover: #f8f9fa;
+    --shadow: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
+    --shadow-hover: 0 1px 3px 0 rgba(60,64,67,.3), 0 4px 8px 3px rgba(60,64,67,.15);
+  }
+
+  body {
+    font-family: 'Roboto', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    padding: 20px 16px 60px;
+    color: var(--text);
+  }
+
+  .form-container {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  /* Header Card */
+  .form-header {
+    background: var(--card);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    margin-bottom: 12px;
+    border-top: 10px solid var(--purple-header);
+  }
+
+  .form-header-content {
+    padding: 24px;
+  }
+
+  .form-title {
+    font-family: 'Google Sans', sans-serif;
+    font-size: 32px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+
+  .form-description {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .required-note {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .required-star {
+    color: var(--error);
+  }
+
+  /* Question Cards */
+  .question-card {
+    background: var(--card);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    margin-bottom: 12px;
+    padding: 24px;
+    transition: box-shadow 0.2s;
+    position: relative;
+  }
+
+  .question-card:focus-within {
+    box-shadow: var(--shadow-hover);
+    border-left: 3px solid var(--focus-line);
+    padding-left: 21px;
+  }
+
+  .question-label {
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    line-height: 1.4;
+  }
+
+  /* Text Inputs */
+  .input-wrapper {
+    position: relative;
+  }
+
+  .form-input {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    outline: none;
+    font-size: 14px;
+    font-family: 'Roboto', sans-serif;
+    padding: 8px 0 4px;
+    background: transparent;
+    color: var(--text);
+    transition: border-color 0.2s;
+  }
+
+  .form-input:hover {
+    border-bottom-color: #202124;
+  }
+
+  .form-input:focus {
+    border-bottom: 2px solid var(--focus-line);
+    padding-bottom: 3px;
+  }
+
+  .form-input::placeholder {
+    color: var(--text-secondary);
+    font-size: 13px;
+  }
+
+  .input-underline {
+    display: none;
+  }
+
+  .char-hint {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    text-align: right;
+  }
+
+  /* Age input - number type */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    opacity: 1;
+  }
+
+  /* Error state */
+  .form-input.error {
+    border-bottom: 2px solid var(--error);
+  }
+
+  .error-msg {
+    font-size: 12px;
+    color: var(--error);
+    margin-top: 6px;
+    display: none;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .error-msg.show {
+    display: flex;
+  }
+
+  /* Signature Card */
+  .signature-card {
+    background: var(--card);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    margin-bottom: 12px;
+    padding: 24px;
+    transition: box-shadow 0.2s;
+  }
+
+  .signature-card:focus-within {
+    box-shadow: var(--shadow-hover);
+  }
+
+  .sig-label {
+    font-size: 15px;
+    color: var(--text);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+
+  .sig-hint {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+  }
+
+  .canvas-wrapper {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: #fafafa;
+    position: relative;
+    overflow: hidden;
+    touch-action: none;
+  }
+
+  .canvas-wrapper:hover {
+    border-color: #888;
+  }
+
+  .canvas-wrapper.active {
+    border-color: var(--focus-line);
+    border-width: 2px;
+    background: #fff;
+  }
+
+  #signatureCanvas {
+    display: block;
+    width: 100%;
+    cursor: crosshair;
+    touch-action: none;
+  }
+
+  .sig-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: #bbb;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    gap: 8px;
+    font-family: 'Roboto', sans-serif;
+  }
+
+  .sig-placeholder svg {
+    opacity: 0.5;
+  }
+
+  .sig-placeholder.hidden {
+    opacity: 0;
+  }
+
+  .sig-baseline {
+    position: absolute;
+    bottom: 32px;
+    left: 16px;
+    right: 16px;
+    height: 1px;
+    background: #e0e0e0;
+    pointer-events: none;
+  }
+
+  .sig-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .sig-status {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .erase-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 16px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: white;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-family: 'Roboto', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .erase-btn:hover {
+    background: #f5f5f5;
+    border-color: #aaa;
+    color: var(--error);
+    border-color: var(--error);
+  }
+
+  .erase-btn:active {
+    background: #fce8e6;
+  }
+
+  /* Submit section */
+  .submit-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  .submit-btn {
+    background: var(--google-blue);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-family: 'Google Sans', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.01em;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    min-width: 120px;
+  }
+
+  .submit-btn:hover {
+    background: var(--google-blue-dark);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  }
+
+  .submit-btn:active {
+    transform: scale(0.98);
+  }
+
+  .submit-btn:disabled {
+    background: #c5c5c5;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  .clear-form-btn {
+    background: none;
+    border: none;
+    color: var(--google-blue);
+    font-size: 14px;
+    font-family: 'Roboto', sans-serif;
+    cursor: pointer;
+    padding: 10px 4px;
+    border-radius: 4px;
+    transition: background 0.15s;
+  }
+
+  .clear-form-btn:hover {
+    background: rgba(26,115,232,0.08);
+    padding: 10px 8px;
+  }
+
+  /* Success overlay */
+  .success-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+
+  .success-overlay.show {
+    display: flex;
+  }
+
+  .success-card {
+    background: white;
+    border-radius: 12px;
+    padding: 40px 32px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 24px 48px rgba(0,0,0,0.2);
+    animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes popIn {
+    from { transform: scale(0.85); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .success-icon {
+    width: 64px;
+    height: 64px;
+    background: #e8f5e9;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .success-icon svg {
+    color: #34a853;
+  }
+
+  .success-title {
+    font-family: 'Google Sans', sans-serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .success-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 24px;
+  }
+
+  .success-close-btn {
+    background: var(--google-blue);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 28px;
+    font-size: 14px;
+    font-family: 'Google Sans', sans-serif;
+    cursor: pointer;
+  }
+
+  /* Footer */
+  .form-footer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 20px;
+    padding-top: 16px;
+  }
+
+  .form-footer a {
+    color: var(--google-blue);
+    text-decoration: none;
+  }
+
+  /* Loading spinner inside button */
+  .spinner {
+    display: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin: 0 auto;
+  }
+
+  .submit-btn.loading .btn-text { display: none; }
+  .submit-btn.loading .spinner { display: block; }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Config notice */
+  .config-notice {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: #856404;
+    line-height: 1.5;
+  }
+
+  .config-notice strong { display: block; margin-bottom: 4px; }
+  .config-notice code {
+    background: rgba(0,0,0,0.08);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 12px;
+  }
+
+  @media (max-width: 480px) {
+    body { padding: 12px 8px 48px; }
+    .form-header-content, .question-card, .signature-card { padding: 20px 16px; }
+    .form-title { font-size: 24px; }
+    .submit-section { flex-direction: column-reverse; align-items: flex-start; }
+    .submit-btn { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="form-container">
+
+  <!-- Header -->
+  <div class="form-header">
+    <div class="form-header-content">
+      <h1 class="form-title">Registration Form</h1>
+      <p class="form-description">Please fill out all required fields below. Your signature will be recorded along with your details upon submission.</p>
+      <p class="required-note"><span class="required-star">*</span> Indicates required question</p>
+    </div>
+  </div>
+
+  <!-- Name -->
+  <div class="question-card" id="card-name">
+    <label class="question-label" for="inputName">
+      Full Name <span class="required-star">*</span>
+    </label>
+    <div class="input-wrapper">
+      <input
+        type="text"
+        id="inputName"
+        class="form-input"
+        placeholder="Your answer"
+        autocomplete="name"
+        maxlength="100"
+      />
+    </div>
+    <div class="error-msg" id="error-name">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+      This is a required question.
+    </div>
+  </div>
+
+  <!-- Age -->
+  <div class="question-card" id="card-age">
+    <label class="question-label" for="inputAge">
+      Age <span class="required-star">*</span>
+    </label>
+    <div class="input-wrapper">
+      <input
+        type="number"
+        id="inputAge"
+        class="form-input"
+        placeholder="Your answer"
+        min="1"
+        max="120"
+        autocomplete="off"
+      />
+    </div>
+    <div class="error-msg" id="error-age">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+      Please enter a valid age (1–120).
+    </div>
+  </div>
+
+  <!-- Signature -->
+  <div class="signature-card" id="card-signature">
+    <div class="sig-label">
+      Signature <span class="required-star">*</span>
+    </div>
+    <p class="sig-hint">Draw your signature in the box below using your mouse, finger, or stylus.</p>
+    <div class="canvas-wrapper" id="canvasWrapper">
+      <canvas id="signatureCanvas"></canvas>
+      <div class="sig-baseline"></div>
+      <div class="sig-placeholder" id="sigPlaceholder">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+        Sign here
+      </div>
+    </div>
+    <div class="sig-actions">
+      <span class="sig-status" id="sigStatus">No signature yet</span>
+      <button type="button" class="erase-btn" id="eraseBtn" onclick="clearSignature()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        Erase
+      </button>
+    </div>
+    <div class="error-msg" id="error-sig">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+      Please provide your signature.
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <div class="submit-section">
+    <button class="submit-btn" id="submitBtn" onclick="submitForm()">
+      <span class="btn-text">Submit</span>
+      <div class="spinner"></div>
+    </button>
+    <button class="clear-form-btn" onclick="clearForm()">Clear form</button>
+  </div>
+
+  <div class="form-footer">
+    This form was created to collect information securely.<br>
+    Never submit passwords. <a href="#">Report abuse</a>
+  </div>
+</div>
+
+<!-- Success Overlay -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-card">
+    <div class="success-icon">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+    </div>
+    <div class="success-title">Your response has been recorded</div>
+    <p class="success-desc">Thank you for submitting the registration form. Your details have been saved successfully.</p>
+    <button class="success-close-btn" onclick="resetAfterSubmit()">Submit another response</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// CONFIGURATION — Replace these with your Google Form values
+// ============================================================
+// How to find entry IDs:
+// 1. Open your Google Form
+// 2. Click the 3-dot menu → "Get pre-filled link"
+// 3. Fill in dummy values and click "Get link"
+// 4. The URL will contain entry.XXXXXXXXX for each field
+// 5. Copy those numbers below
+
+const FORM_CONFIG = {
+  // Your Google Form action URL (replace /viewform with /formResponse)
+  actionUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSd1sJxpyfGXH8q_PqjKsNfR_OBsILvIcHGun_2wtmAu7Wpt4w/formResponse',
+  // Entry IDs for each field
+  nameEntry:  'entry.1480577736',
+  ageEntry:   'entry.1766428646',
+  sigEntry:   'entry.1810882928',
+};
+// ============================================================
+
+// === Signature Canvas Setup ===
+const canvas = document.getElementById('signatureCanvas');
+const ctx = canvas.getContext('2d');
+const wrapper = document.getElementById('canvasWrapper');
+const placeholder = document.getElementById('sigPlaceholder');
+const sigStatus = document.getElementById('sigStatus');
+
+let isDrawing = false;
+let hasSig = false;
+let lastX = 0, lastY = 0;
+
+function resizeCanvas() {
+  const rect = wrapper.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  const w = rect.width;
+  const h = Math.max(160, Math.min(220, window.innerHeight * 0.25));
+
+  // Save current drawing
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const oldW = canvas.width, oldH = canvas.height;
+
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  canvas.style.height = h + 'px';
+  ctx.scale(dpr, dpr);
+
+  // Restore drawing
+  if (oldW > 0 && oldH > 0 && hasSig) {
+    const tmp = document.createElement('canvas');
+    tmp.width = oldW; tmp.height = oldH;
+    tmp.getContext('2d').putImageData(imageData, 0, 0);
+    ctx.drawImage(tmp, 0, 0, oldW / (window.devicePixelRatio||1), oldH / (window.devicePixelRatio||1));
+  }
+
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.strokeStyle = '#1a1a2e';
+  ctx.lineWidth = 2;
+}
+
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function getPos(e) {
+  const rect = canvas.getBoundingClientRect();
+  if (e.touches) {
+    return {
+      x: e.touches[0].clientX - rect.left,
+      y: e.touches[0].clientY - rect.top
+    };
+  }
+  return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+}
+
+function startDraw(e) {
+  e.preventDefault();
+  isDrawing = true;
+  const pos = getPos(e);
+  lastX = pos.x; lastY = pos.y;
+  wrapper.classList.add('active');
+  ctx.beginPath();
+  ctx.moveTo(lastX, lastY);
+}
+
+function draw(e) {
+  if (!isDrawing) return;
+  e.preventDefault();
+  const pos = getPos(e);
+  ctx.lineTo(pos.x, pos.y);
+  ctx.stroke();
+  lastX = pos.x; lastY = pos.y;
+
+  if (!hasSig) {
+    hasSig = true;
+    placeholder.classList.add('hidden');
+    sigStatus.textContent = 'Signature captured ✓';
+    sigStatus.style.color = '#34a853';
+    document.getElementById('error-sig').classList.remove('show');
+  }
+}
+
+function endDraw(e) {
+  if (!isDrawing) return;
+  isDrawing = false;
+  ctx.closePath();
+}
+
+canvas.addEventListener('mousedown', startDraw);
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseup', endDraw);
+canvas.addEventListener('mouseleave', endDraw);
+canvas.addEventListener('touchstart', startDraw, { passive: false });
+canvas.addEventListener('touchmove', draw, { passive: false });
+canvas.addEventListener('touchend', endDraw);
+
+function clearSignature() {
+  const dpr = window.devicePixelRatio || 1;
+  ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+  hasSig = false;
+  placeholder.classList.remove('hidden');
+  wrapper.classList.remove('active');
+  sigStatus.textContent = 'No signature yet';
+  sigStatus.style.color = '';
+}
+
+// === Form Validation & Submit ===
+function validate() {
+  let ok = true;
+  const name = document.getElementById('inputName').value.trim();
+  const age = document.getElementById('inputAge').value.trim();
+
+  // Name
+  const nameEl = document.getElementById('inputName');
+  const nameErr = document.getElementById('error-name');
+  if (!name) {
+    nameEl.classList.add('error');
+    nameErr.classList.add('show');
+    ok = false;
+  } else {
+    nameEl.classList.remove('error');
+    nameErr.classList.remove('show');
+  }
+
+  // Age
+  const ageEl = document.getElementById('inputAge');
+  const ageErr = document.getElementById('error-age');
+  const ageNum = parseInt(age);
+  if (!age || isNaN(ageNum) || ageNum < 1 || ageNum > 120) {
+    ageEl.classList.add('error');
+    ageErr.classList.add('show');
+    ok = false;
+  } else {
+    ageEl.classList.remove('error');
+    ageErr.classList.remove('show');
+  }
+
+  // Signature
+  const sigErr = document.getElementById('error-sig');
+  if (!hasSig) {
+    sigErr.classList.add('show');
+    ok = false;
+  } else {
+    sigErr.classList.remove('show');
+  }
+
+  return ok;
+}
+
+function submitForm() {
+  if (!validate()) {
+    // Scroll to first error
+    const firstErr = document.querySelector('.error-msg.show');
+    if (firstErr) firstErr.closest('.question-card, .signature-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.classList.add('loading');
+  btn.disabled = true;
+
+  const name = document.getElementById('inputName').value.trim();
+  const age = document.getElementById('inputAge').value.trim();
+  const sigData = canvas.toDataURL('image/png');
+
+  // Submit to Google Form via hidden iframe (no redirect)
+  const iframe = document.getElementById('hiddenFrame') || (() => {
+    const f = document.createElement('iframe');
+    f.name = 'hiddenFrame';
+    f.id = 'hiddenFrame';
+    f.style.display = 'none';
+    document.body.appendChild(f);
+    return f;
+  })();
+
+  const formEl = document.createElement('form');
+  formEl.method = 'POST';
+  formEl.action = FORM_CONFIG.actionUrl;
+  formEl.target = 'hiddenFrame';
+  formEl.style.display = 'none';
+
+  const fields = [
+    { name: FORM_CONFIG.nameEntry, value: name },
+    { name: FORM_CONFIG.ageEntry,  value: age },
+    { name: FORM_CONFIG.sigEntry,  value: sigData },
+  ];
+
+  fields.forEach(({ name: n, value: v }) => {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = n;
+    input.value = v;
+    formEl.appendChild(input);
+  });
+
+  document.body.appendChild(formEl);
+  formEl.submit();
+  document.body.removeChild(formEl);
+
+  // Show success after brief delay
+  setTimeout(() => {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+    document.getElementById('successOverlay').classList.add('show');
+  }, 1200);
+}
+
+function clearForm() {
+  document.getElementById('inputName').value = '';
+  document.getElementById('inputAge').value = '';
+  ['inputName','inputAge'].forEach(id => document.getElementById(id).classList.remove('error'));
+  ['error-name','error-age','error-sig'].forEach(id => document.getElementById(id).classList.remove('show'));
+  clearSignature();
+}
+
+function resetAfterSubmit() {
+  clearForm();
+  document.getElementById('successOverlay').classList.remove('show');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Live validation on blur
+document.getElementById('inputName').addEventListener('blur', () => {
+  const el = document.getElementById('inputName');
+  const err = document.getElementById('error-name');
+  if (!el.value.trim()) { el.classList.add('error'); err.classList.add('show'); }
+  else { el.classList.remove('error'); err.classList.remove('show'); }
+});
+
+document.getElementById('inputAge').addEventListener('blur', () => {
+  const el = document.getElementById('inputAge');
+  const err = document.getElementById('error-age');
+  const v = parseInt(el.value);
+  if (!el.value || isNaN(v) || v < 1 || v > 120) { el.classList.add('error'); err.classList.add('show'); }
+  else { el.classList.remove('error'); err.classList.remove('show'); }
+});
+</script>
+</body>
+</html>
