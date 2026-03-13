@@ -602,25 +602,7 @@
 </div>
 
 <script>
-// ============================================================
-// CONFIGURATION — Replace these with your Google Form values
-// ============================================================
-// How to find entry IDs:
-// 1. Open your Google Form
-// 2. Click the 3-dot menu → "Get pre-filled link"
-// 3. Fill in dummy values and click "Get link"
-// 4. The URL will contain entry.XXXXXXXXX for each field
-// 5. Copy those numbers below
 
-const FORM_CONFIG = {
-  // Your Google Form action URL (replace /viewform with /formResponse)
-  actionUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSd1sJxpyfGXH8q_PqjKsNfR_OBsILvIcHGun_2wtmAu7Wpt4w/formResponse',
-  // Entry IDs for each field
-  nameEntry:  'entry.1480577736',
-  ageEntry:   'entry.1766428646',
-  sigEntry:   'entry.1810882928',
-};
-// ============================================================
 
 // === Signature Canvas Setup ===
 const canvas = document.getElementById('signatureCanvas');
@@ -772,7 +754,6 @@ function validate() {
 
 function submitForm() {
   if (!validate()) {
-    // Scroll to first error
     const firstErr = document.querySelector('.error-msg.show');
     if (firstErr) firstErr.closest('.question-card, .signature-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
@@ -786,46 +767,24 @@ function submitForm() {
   const age = document.getElementById('inputAge').value.trim();
   const sigData = canvas.toDataURL('image/png');
 
-  // Submit to Google Form via hidden iframe (no redirect)
-  const iframe = document.getElementById('hiddenFrame') || (() => {
-    const f = document.createElement('iframe');
-    f.name = 'hiddenFrame';
-    f.id = 'hiddenFrame';
-    f.style.display = 'none';
-    document.body.appendChild(f);
-    return f;
-  })();
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwp-bO03SjF0R9vw6kt1Y4sCuAUVTYH2a6f73CgX-Usnfg_IQUEK0UZ6QOPHRvAOhuNUw/exec';
 
-  const formEl = document.createElement('form');
-  formEl.method = 'POST';
-  formEl.action = FORM_CONFIG.actionUrl;
-  formEl.target = 'hiddenFrame';
-  formEl.style.display = 'none';
-
-  const fields = [
-    { name: FORM_CONFIG.nameEntry, value: name },
-    { name: FORM_CONFIG.ageEntry,  value: age },
-    { name: FORM_CONFIG.sigEntry,  value: sigData },
-  ];
-
-  fields.forEach(({ name: n, value: v }) => {
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = n;
-    input.value = v;
-    formEl.appendChild(input);
-  });
-
-  document.body.appendChild(formEl);
-  formEl.submit();
-  document.body.removeChild(formEl);
-
-  // Show success after brief delay
-  setTimeout(() => {
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, age, signature: sigData })
+  })
+  .then(() => {
     btn.classList.remove('loading');
     btn.disabled = false;
     document.getElementById('successOverlay').classList.add('show');
-  }, 1200);
+  })
+  .catch(() => {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+    alert('Submission failed. Please check your connection and try again.');
+  });
 }
 
 function clearForm() {
